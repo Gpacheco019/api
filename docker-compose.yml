@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  api.mycontent:
+    build: .
+    ports:
+      - "3130:3130"
+    depends_on:
+      - db
+    environment:
+      - PGHOST=db
+      - PGUSER=root
+      - PGPASSWORD=root
+      - PGDATABASE=mycontacts
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: yarn dev
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: mycontacts
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+volumes:
+  pgdata:
+  pglogs:
